@@ -18,7 +18,7 @@ function UpdateBookInfo(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8082/api/books/${id}`)
+      .get(`https://cise-react.vercel.app/`)
       .then((res) => {
         setBook({
           title: res.data.title,
@@ -51,7 +51,7 @@ function UpdateBookInfo(props) {
     };
 
     axios
-      .put(`http://localhost:8082/api/books/${id}`, data)
+      .put(`https://cise-react.vercel.app/`, data)
       .then((res) => {
         navigate(`/show-book/${id}`);
       })
