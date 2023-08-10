@@ -50,7 +50,6 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
     evidence: article.evidence,
   }));
 
-
   return {
     props: {
       articles,
