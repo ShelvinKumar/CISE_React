@@ -1,6 +1,20 @@
 import Image from 'next/image'
+import { kv } from "@vercel/kv";
 
-export default function Home() {
+export default async function Cart({ params }: { params: { user: string } }) {
+  const cart = await kv.get<{ id: string; quantity: number }[]>(params.user);
+  return (
+    <div>
+      {cart?.map((item) => (
+        <div key={item.id}>
+          {item.id} - {item.quantity}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/*export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -110,4 +124,4 @@ export default function Home() {
       </div>
     </main>
   )
-}
+}*/
