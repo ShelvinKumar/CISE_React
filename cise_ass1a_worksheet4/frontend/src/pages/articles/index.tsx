@@ -1,60 +1,171 @@
-import { GetStaticProps, NextPage } from "next";
-import SortableTable from "../../components/table/SortableTable";
-import data from "../../utils/dummydata.json";
+import { FormEvent, useState } from "react";
+import formStyles from "../../../styles/Form.module.scss";
+import axios from "axios";
 
-interface ArticlesInterface {
-  id: string;
-  title: string;
-  authors: string;
-  source: string;
-  pubyear: string;
-  doi: string;
-  claim: string;
-  evidence: string;
-}
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-type ArticlesProps = {
-  articles: ArticlesInterface[];
-};
+const NewDiscussion = () => {
+  const [title, setTitle] = useState("");
+  const [authors, setAuthors] = useState<string[]>([""]);
+  const [source, setSource] = useState("");
+  const [pubYear, setPubYear] = useState<number>(0);
+  const [doi, setDoi] = useState("");
+  const [summary, setSummary] = useState("");
+  const [linkedDiscussion, setLinkedDiscussion] = useState("");
 
-const Articles: NextPage<ArticlesProps> = ({ articles }) => {
-  const headers: { key: keyof ArticlesInterface; label: string }[] = [
-    { key: "title", label: "Title" },
-    { key: "authors", label: "Authors" },
-    { key: "source", label: "Source" },
-    { key: "pubyear", label: "Publication Year" },
-    { key: "doi", label: "DOI" },
-    { key: "claim", label: "Claim" },
-    { key: "evidence", label: "Evidence" },
-  ];
+  const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
+    if (backendUrl) {
+      console.log("Backend Base URL:", backendUrl);
+      event.preventDefault();
+      console.log("Submitting new article");
+      try {
+        const newArticleData = {
+          title,
+          authors,
+          source,
+          publication_year: pubYear,
+          doi,
+          summary,
+          linked_discussion: linkedDiscussion,
+        };
+        console.log("Submitting new article data:", newArticleData);
+        const response = await axios.post(backendUrl, newArticleData);
+        console.log("Article created:", response);
+      } catch (error) {
+        console.error("Error creating article:", error);
+      }
+    }
+    else{
+      console.error("Backend url undefined");
+    }
+  };
+
+  const addAuthor = () => {
+    setAuthors([...authors, ""]);
+  };
+
+  const removeAuthor = (index: number) => {
+    const updatedAuthors = authors.filter((_, i) => i !== index);
+    setAuthors(updatedAuthors);
+  };
+
+  const changeAuthor = (index: number, value: string) => {
+    const updatedAuthors = authors.map((oldValue, i) => (index === i ? value : oldValue));
+    setAuthors(updatedAuthors);
+  };
 
   return (
     <div className="container">
-      <h1>Articles Index Page</h1>
-      <p>Page containing a table of articles:</p>
-      <SortableTable headers={headers} data={articles} />
+      <h1>New Article</h1>
+      <form className={formStyles.form} onSubmit={submitNewArticle}>
+        <label htmlFor="title">Title:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="title"
+          id="title"
+          value={title}
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+        />
+
+        <label htmlFor="author">Authors:</label>
+        {authors.map((author, index) => (
+          <div key={`author ${index}`} className={formStyles.arrayItem}>
+            <input
+              type="text"
+              name="author"
+              value={author}
+              onChange={(event) => changeAuthor(index, event.target.value)}
+              className={formStyles.formItem}
+            />
+            <button
+              onClick={() => removeAuthor(index)}
+              className={formStyles.buttonItem}
+              style={{ marginLeft: "3rem" }}
+              type="button"
+            >
+              -
+            </button>
+          </div>
+        ))}
+        <button
+          onClick={() => addAuthor()}
+          className={formStyles.buttonItem}
+          style={{ marginLeft: "auto" }}
+          type="button"
+        >
+          +
+        </button>
+
+        <label htmlFor="source">Source:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="source"
+          id="source"
+          value={source}
+          onChange={(event) => {
+            setSource(event.target.value);
+          }}
+        />
+
+        <label htmlFor="pubYear">Publication Year:</label>
+        <input
+          className={formStyles.formItem}
+          type="number"
+          name="pubYear"
+          id="pubYear"
+          value={pubYear}
+          onChange={(event) => {
+            const val = event.target.value;
+            if (val === "") {
+              setPubYear(0);
+            } else {
+              setPubYear(parseInt(val));
+            }
+          }}
+        />
+
+        <label htmlFor="doi">DOI:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="doi"
+          id="doi"
+          value={doi}
+          onChange={(event) => {
+            setDoi(event.target.value);
+          }}
+        />
+
+        <label htmlFor="summary">Summary:</label>
+        <textarea
+          className={formStyles.formTextArea}
+          name="summary"
+          value={summary}
+          onChange={(event) => setSummary(event.target.value)}
+        />
+
+        <label htmlFor="linkedDiscussion">Linked Discussion:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          name="linkedDiscussion"
+          id="linkedDiscussion"
+          value={linkedDiscussion}
+          onChange={(event) => {
+            setLinkedDiscussion(event.target.value);
+          }}
+        />
+
+        <button className={formStyles.formItem} type="submit">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
-  // Map the data to ensure all articles have consistent property names
-  const articles = data.articles.map((article) => ({
-    id: article.id ?? article._id,
-    title: article.title,
-    authors: article.authors,
-    source: article.source,
-    pubyear: article.pubyear,
-    doi: article.doi,
-    claim: article.claim,
-    evidence: article.evidence,
-  }));
-
-  return {
-    props: {
-      articles,
-    },
-  };
-};
-
-export default Articles;
+export default NewDiscussion;
