@@ -1,12 +1,9 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
-import axios from "axios";
-
-const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
-  const [authors, setAuthors] = useState<string[]>([""]);
+  const [authors, setAuthors] = useState<string[]>([]);
   const [source, setSource] = useState("");
   const [pubYear, setPubYear] = useState<number>(0);
   const [doi, setDoi] = useState("");
@@ -14,45 +11,40 @@ const NewDiscussion = () => {
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
 
   const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
-    if (backendUrl) {
-      console.log("Backend Base URL:", backendUrl);
-      event.preventDefault();
-      console.log("Submitting new article");
-      try {
-        const newArticleData = {
-          title,
-          authors,
-          source,
-          publication_year: pubYear,
-          doi,
-          summary,
-          linked_discussion: linkedDiscussion,
-        };
-        console.log("Submitting new article data:", newArticleData);
-        const response = await axios.post(backendUrl, newArticleData);
-        console.log("Article created:", response);
-      } catch (error) {
-        console.error("Error creating article:", error);
-      }
-    }
-    else{
-      console.error("Backend url undefined");
-    }
+    event.preventDefault();
+
+    console.log(
+      JSON.stringify({
+        title,
+        authors,
+        source,
+        publication_year: pubYear,
+        doi,
+        summary,
+        linked_discussion: linkedDiscussion,
+      })
+    );
   };
 
+  // Some helper methods for the authors array
+
   const addAuthor = () => {
-    setAuthors([...authors, ""]);
+    setAuthors(authors.concat([""]));
   };
 
   const removeAuthor = (index: number) => {
-    const updatedAuthors = authors.filter((_, i) => i !== index);
-    setAuthors(updatedAuthors);
+    setAuthors(authors.filter((_, i) => i !== index));
   };
 
   const changeAuthor = (index: number, value: string) => {
-    const updatedAuthors = authors.map((oldValue, i) => (index === i ? value : oldValue));
-    setAuthors(updatedAuthors);
+    setAuthors(
+      authors.map((oldValue, i) => {
+        return index === i ? value : oldValue;
+      })
+    );
   };
+
+  // Return the full form
 
   return (
     <div className="container">
@@ -71,25 +63,27 @@ const NewDiscussion = () => {
         />
 
         <label htmlFor="author">Authors:</label>
-        {authors.map((author, index) => (
-          <div key={`author ${index}`} className={formStyles.arrayItem}>
-            <input
-              type="text"
-              name="author"
-              value={author}
-              onChange={(event) => changeAuthor(index, event.target.value)}
-              className={formStyles.formItem}
-            />
-            <button
-              onClick={() => removeAuthor(index)}
-              className={formStyles.buttonItem}
-              style={{ marginLeft: "3rem" }}
-              type="button"
-            >
-              -
-            </button>
-          </div>
-        ))}
+        {authors.map((author, index) => {
+          return (
+            <div key={`author ${index}`} className={formStyles.arrayItem}>
+              <input
+                type="text"
+                name="author"
+                value={author}
+                onChange={(event) => changeAuthor(index, event.target.value)}
+                className={formStyles.formItem}
+              />
+              <button
+                onClick={() => removeAuthor(index)}
+                className={formStyles.buttonItem}
+                style={{ marginLeft: "3rem" }}
+                type="button"
+              >
+                -
+              </button>
+            </div>
+          );
+        })}
         <button
           onClick={() => addAuthor()}
           className={formStyles.buttonItem}
@@ -146,18 +140,6 @@ const NewDiscussion = () => {
           name="summary"
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
-        />
-
-        <label htmlFor="linkedDiscussion">Linked Discussion:</label>
-        <input
-          className={formStyles.formItem}
-          type="text"
-          name="linkedDiscussion"
-          id="linkedDiscussion"
-          value={linkedDiscussion}
-          onChange={(event) => {
-            setLinkedDiscussion(event.target.value);
-          }}
         />
 
         <button className={formStyles.formItem} type="submit">
