@@ -1,7 +1,9 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
+import SubmissionForm from "@/components/SubmissionForm";
 
-const NewDiscussion = () => {
+const NewDiscussion = ({ addNew }) => {
+  let id = 13;
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([]);
   const [source, setSource] = useState("");
@@ -12,18 +14,18 @@ const NewDiscussion = () => {
 
   const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    addNew({
+      id,
+      title,
+      authors,
+      source,
+      publication_year: pubYear,
+      doi,
+      summary,
+      linked_discussion: linkedDiscussion,
+    });
 
-    console.log(
-      JSON.stringify({
-        title,
-        authors,
-        source,
-        publication_year: pubYear,
-        doi,
-        summary,
-        linked_discussion: linkedDiscussion,
-      })
-    );
+    id++;
   };
 
   // Some helper methods for the authors array
@@ -48,6 +50,7 @@ const NewDiscussion = () => {
 
   return (
     <div className="container">
+      {/* <SubmissionForm /> */}
       <h1>New Article</h1>
       <form className={formStyles.form} onSubmit={submitNewArticle}>
         <label htmlFor="title">Title:</label>

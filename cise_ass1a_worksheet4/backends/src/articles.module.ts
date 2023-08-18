@@ -8,7 +8,7 @@ import { DatabaseService } from './database.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRootAsync({useFactory: () => ({uri: 'mongodb+srv://shalvink42:Genesis988@cluster0.lwphzxt.mongodb.net/?retryWrites=true&w=majority',}),}),
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
   ],
   controllers: [ArticlesController],

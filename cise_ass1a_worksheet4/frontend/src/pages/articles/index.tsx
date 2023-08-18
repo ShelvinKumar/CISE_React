@@ -1,6 +1,8 @@
 import { GetStaticProps, NextPage } from "next";
+import { useState } from "react";
 import SortableTable from "../../components/table/SortableTable";
-import data from "../../utils/dummydata.json";
+
+//import data from "../../utils/api"
 
 interface ArticlesInterface {
   id: string;
@@ -18,7 +20,9 @@ type ArticlesProps = {
 };
 
 const Articles: NextPage<ArticlesProps> = ({ articles }) => {
+  // let articles = myFunc();
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
+    { key: "id", label: "ID" },
     { key: "title", label: "Title" },
     { key: "authors", label: "Authors" },
     { key: "source", label: "Source" },
@@ -37,25 +41,25 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
-  // Map the data to ensure all articles have consistent property names
-  const articles = data.articles.map((article) => ({
-    id: article.id ?? article._id,
-    title: article.title,
-    authors: article.authors,
-    source: article.source,
-    pubyear: article.pubyear,
-    doi: article.doi,
-    claim: article.claim,
-    evidence: article.evidence,
-  }));
+// export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
+//   // Map the data to ensure all articles have consistent property names
+//   const articles = data.articles.map((article) => ({
+//     id: article.id ?? article._id,
+//     title: article.title,
+//     authors: article.authors,
+//     source: article.source,
+//     pubyear: article.pubyear,
+//     doi: article.doi,
+//     claim: article.claim,
+//     evidence: article.evidence,
+//   }));
 
 
-  return {
-    props: {
-      articles,
-    },
-  };
-};
+//   return {
+//     props: {
+//       articles,
+//     },
+//   };
+// };
 
 export default Articles;

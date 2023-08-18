@@ -18,7 +18,7 @@ let ArticlesModule = exports.ArticlesModule = class ArticlesModule {
 exports.ArticlesModule = ArticlesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
+            mongoose_1.MongooseModule.forRootAsync({ useFactory: () => ({ uri: 'mongodb+srv://shalvink42:Genesis988@cluster0.lwphzxt.mongodb.net/?retryWrites=true&w=majority', }), }),
             mongoose_1.MongooseModule.forFeature([{ name: articles_schema_1.Article.name, schema: articles_schema_1.ArticleSchema }]),
         ],
         controllers: [articles_controller_1.ArticlesController],

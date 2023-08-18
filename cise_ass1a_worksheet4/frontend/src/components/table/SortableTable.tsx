@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./SortableTable.module.scss";
+import { CLIENT_RENEG_LIMIT } from "tls";
 
 
 interface SortableTableProps {
@@ -36,11 +37,16 @@ const SortableTable: React.FC<SortableTableProps> = ({ headers, data }) => (
     <tbody>
       {data.map((row, i) => (
         <tr key={i}>
-          {headers.map((header) => (
-            <td key={header.key} className={styles.tableCell}>
+          {headers.map((header) => {
+            console.log(row)
+            console.log(header)
+            return (
+              <td key={header.key} className={styles.tableCell}>
               {row[header.key]}
             </td>
-          ))}
+          )
+
+          })}
         </tr>
       ))}
     </tbody>

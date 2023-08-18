@@ -14,11 +14,6 @@ export class ArticlesService {
     return this.articleModel.find().exec();
   }
 
-  //async createArticle(createArticleDto: CreateArticleDto) {
-    //const createdArticle = new this.articleModel(createArticleDto);
-    //return createdArticle.save();
-  //}
-
   async createArticle(article: Article): Promise<Article> {
     const newArticle = new this.articleModel(Article);
     return newArticle.save();
