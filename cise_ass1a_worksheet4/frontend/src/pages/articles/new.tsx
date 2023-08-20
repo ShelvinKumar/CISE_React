@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import formStyles from "../../../styles/Form.module.scss";
 import SubmissionForm from "@/components/SubmissionForm";
 
-const NewDiscussion = ({ addNew }) => {
+function NewDiscussion({ addNew }) {
   let id = 13;
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([]);
@@ -29,7 +29,6 @@ const NewDiscussion = ({ addNew }) => {
   };
 
   // Some helper methods for the authors array
-
   const addAuthor = () => {
     setAuthors(authors.concat([""]));
   };
@@ -47,7 +46,6 @@ const NewDiscussion = ({ addNew }) => {
   };
 
   // Return the full form
-
   return (
     <div className="container">
       {/* <SubmissionForm /> */}
@@ -62,8 +60,7 @@ const NewDiscussion = ({ addNew }) => {
           value={title}
           onChange={(event) => {
             setTitle(event.target.value);
-          }}
-        />
+          } } />
 
         <label htmlFor="author">Authors:</label>
         {authors.map((author, index) => {
@@ -74,8 +71,7 @@ const NewDiscussion = ({ addNew }) => {
                 name="author"
                 value={author}
                 onChange={(event) => changeAuthor(index, event.target.value)}
-                className={formStyles.formItem}
-              />
+                className={formStyles.formItem} />
               <button
                 onClick={() => removeAuthor(index)}
                 className={formStyles.buttonItem}
@@ -105,8 +101,7 @@ const NewDiscussion = ({ addNew }) => {
           value={source}
           onChange={(event) => {
             setSource(event.target.value);
-          }}
-        />
+          } } />
 
         <label htmlFor="pubYear">Publication Year:</label>
         <input
@@ -122,8 +117,7 @@ const NewDiscussion = ({ addNew }) => {
             } else {
               setPubYear(parseInt(val));
             }
-          }}
-        />
+          } } />
 
         <label htmlFor="doi">DOI:</label>
         <input
@@ -134,16 +128,14 @@ const NewDiscussion = ({ addNew }) => {
           value={doi}
           onChange={(event) => {
             setDoi(event.target.value);
-          }}
-        />
+          } } />
 
         <label htmlFor="summary">Summary:</label>
         <textarea
           className={formStyles.formTextArea}
           name="summary"
           value={summary}
-          onChange={(event) => setSummary(event.target.value)}
-        />
+          onChange={(event) => setSummary(event.target.value)} />
 
         <button className={formStyles.formItem} type="submit">
           Submit
@@ -151,6 +143,6 @@ const NewDiscussion = ({ addNew }) => {
       </form>
     </div>
   );
-};
+}
 
 export default NewDiscussion;
